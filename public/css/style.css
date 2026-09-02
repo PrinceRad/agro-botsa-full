@@ -199,7 +199,8 @@ main {
 /* ---------- Home sections: feature-shortcut cards + tip cards ---------- */
 
 .home-sections {
-  padding: 92px max(7vw, 24px) 96px;
+  margin-top: -44px;
+  padding: 76px max(7vw, 24px) 96px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -207,6 +208,9 @@ main {
   background:
     radial-gradient(circle at 90% 6%, rgba(191, 205, 152, .38), transparent 25%),
     #edf0e5;
+  border-radius: 36px 36px 0 0;
+  position: relative;
+  z-index: 2;
 }
 
 .home-section {
@@ -645,7 +649,7 @@ li {
     padding: 145px 20px 50px;
   }
 
-  .home-sections { padding: 64px 20px 68px; gap: 64px; }
+  .home-sections { margin-top: -28px; padding: 56px 20px 68px; gap: 64px; border-radius: 28px 28px 0 0; }
   .cards-row { grid-template-columns: 1fr; }
 
   .section-intro { margin-bottom: 28px; }
