@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Agro-Botsa — weather insight, pest and disease diagnosis, and crop activity tracking for growers." />
+  <title>Agro-Botsa</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>Agro-Botsa</h1>
+    </header>
+
+    <nav class="app-nav">
+      <button type="button" data-screen="home" class="active"><span class="nav-label">Home</span></button>
+      <button type="button" data-screen="weather"><span class="nav-label">Weather</span></button>
+      <button type="button" data-screen="diagnose"><span class="nav-label">Diagnose</span></button>
+      <button type="button" data-screen="activity"><span class="nav-label">Activity</span></button>
+      <button type="button" data-screen="settings"><span class="nav-label">Settings</span></button>
+    </nav>
+
+    <main>
+      <section id="screen-home" class="screen">
+        <div class="hero">
+          <h2>Grow Smarter.<br />Harvest Better.</h2>
+          <p>Weather insight, pest and disease diagnosis, and activity tracking — everything you need to look after your crops, in one place.</p>
+          <div class="hero-actions">
+            <button type="button" id="hero-cta">Get Started</button>
+            <button type="button" id="guide-toggle">How to Use</button>
+          </div>
+        </div>
+
+        <div class="home-sections">
+
+          <div class="home-section">
+            <h3 class="section-heading">Jump straight in</h3>
+            <div class="cards-row feature-cards-row">
+
+              <button type="button" class="feature-card" data-goto-screen="weather">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1617072635501-671f147c84dc?q=80&amp;w=900&amp;auto=format&amp;fit=crop'), url('https://images.unsplash.com/photo-1731826000529-11e4abc92e78?q=80&amp;w=900&amp;auto=format&amp;fit=crop');"></div>
+                <div class="card-body">
+                  <h4>Weather</h4>
+                  <p>Check local conditions before planning field work for the day.</p>
+                </div>
+              </button>
+
+              <button type="button" class="feature-card" data-goto-screen="diagnose">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1602332659518-1e068472e7ab?q=80&amp;w=900&amp;auto=format&amp;fit=crop'), url('https://images.unsplash.com/photo-1718105019708-9d41f411a405?q=80&amp;w=900&amp;auto=format&amp;fit=crop');"></div>
+                <div class="card-body">
+                  <h4>Diagnose</h4>
+                  <p>Photograph an affected plant to identify pests or disease.</p>
+                </div>
+              </button>
+
+              <button type="button" class="feature-card" data-goto-screen="activity">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1707853612545-69bf900b0ae8?q=80&amp;w=900&amp;auto=format&amp;fit=crop'), url('https://images.unsplash.com/photo-1729113707537-8c054ba97650?q=80&amp;w=900&amp;auto=format&amp;fit=crop');"></div>
+                <div class="card-body">
+                  <h4>Activity</h4>
+                  <p>Log watering, spraying, planting and harvesting over time.</p>
+                </div>
+              </button>
+
+            </div>
+          </div>
+
+          <div class="home-section">
+            <h3 class="section-heading">Growing tips</h3>
+            <div class="cards-row tip-cards-row">
+
+              <div class="tip-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1562778380-180f296dd897?q=80&amp;w=900&amp;auto=format&amp;fit=crop'), url('https://images.unsplash.com/photo-1707853612545-69bf900b0ae8?q=80&amp;w=900&amp;auto=format&amp;fit=crop');"></div>
+                <div class="card-body">
+                  <h4>Water at the right time</h4>
+                  <p>Water early morning or evening to reduce evaporation loss and get more to the roots.</p>
+                </div>
+              </div>
+
+              <div class="tip-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1616936509980-7ff51172258d?q=80&amp;w=900&amp;auto=format&amp;fit=crop'), url('https://images.unsplash.com/photo-1717248802449-4f6c76f39c93?q=80&amp;w=900&amp;auto=format&amp;fit=crop');"></div>
+                <div class="card-body">
+                  <h4>Let good bugs work for you</h4>
+                  <p>Ladybirds and other beneficial insects can control pests naturally — avoid killing them with broad sprays.</p>
+                </div>
+              </div>
+
+              <div class="tip-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1550811214-ab22b38fc1ca?q=80&amp;w=900&amp;auto=format&amp;fit=crop'), url('https://images.unsplash.com/photo-1731826000529-11e4abc92e78?q=80&amp;w=900&amp;auto=format&amp;fit=crop');"></div>
+                <div class="card-body">
+                  <h4>Check your soil, not just your plants</h4>
+                  <p>Healthy, crumbly soil with visible organic matter usually means healthier crops above ground too.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="screen-weather" class="screen hidden">
+        <h2>Weather</h2>
+        <div id="weather-result">Checking your location…</div>
+        <div id="weather-manual-fallback" class="hidden">
+          <p>Couldn't get your location. Enter it manually:</p>
+          <input type="text" id="manual-location-input" placeholder="e.g. Gaborone" />
+          <button type="button" id="manual-location-submit">Check</button>
+        </div>
+      </section>
+
+      <section id="screen-diagnose" class="screen hidden">
+        <h2>Diagnose</h2>
+        <input type="file" accept="image/*" capture="environment" id="photo-input" />
+        <div id="diagnose-result"></div>
+        <h3>History</h3>
+        <ul id="diagnose-history"></ul>
+      </section>
+
+      <section id="screen-activity" class="screen hidden">
+        <h2>Activity Log</h2>
+        <form id="activity-form">
+          <select id="activity-type">
+            <option value="watered">Watered</option>
+            <option value="sprayed">Sprayed</option>
+            <option value="planted">Planted</option>
+            <option value="harvested">Harvested</option>
+            <option value="other">Other</option>
+          </select>
+          <input type="text" id="activity-notes" placeholder="Notes (optional)" />
+          <button type="submit">Add Entry</button>
+        </form>
+        <ul id="activity-list"></ul>
+      </section>
+
+      <section id="screen-settings" class="screen hidden">
+        <h2>Settings</h2>
+        <p>Your profile and application settings will appear here.</p>
+      </section>
+    </main>
+
+    <aside id="guide-panel" class="guide-panel hidden">
+      <button type="button" id="guide-close" class="guide-close" aria-label="Close guide">✕</button>
+      <h3>How to Use Agro-Botsa</h3>
+      <ul class="guide-list">
+        <li><strong>Weather</strong> — check local conditions before planning field work.</li>
+        <li><strong>Diagnose</strong> — photograph an affected plant to identify pests or disease and get treatment guidance.</li>
+        <li><strong>Activity</strong> — log what you've done (watering, spraying, planting, harvesting) to build a history over time.</li>
+      </ul>
+    </aside>
+    <div id="guide-backdrop" class="guide-backdrop hidden"></div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/diagnose.js"></script>
+  <script src="js/activity.js"></script>
+  <script>
+    document.querySelectorAll('.feature-card[data-goto-screen]').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var target = card.getAttribute('data-goto-screen');
+        var navButton = document.querySelector('.app-nav button[data-screen="' + target + '"]');
+        if (navButton) navButton.click();
+      });
+    });
+  </script>
+</body>
+</html>

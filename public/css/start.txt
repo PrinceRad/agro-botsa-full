@@ -1,0 +1,7 @@
+cd agro-botsa-full
+dir
+
+
+npm install
+copy .env.example .env
+npm start
