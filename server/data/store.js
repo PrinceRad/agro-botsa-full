@@ -49,3 +49,14 @@ export async function remove(collectionName, id) {
   await fs.writeFile(filePath, JSON.stringify(filtered, null, 2), 'utf-8');
   return filtered.length !== items.length;
 }
+
+export async function update(collectionName, id, changes) {
+  const items = await getAll(collectionName);
+  const index = items.findIndex((item) => item.id === id);
+  if (index === -1) return null;
+
+  items[index] = { ...items[index], ...changes };
+  const filePath = filePathFor(collectionName);
+  await fs.writeFile(filePath, JSON.stringify(items, null, 2), 'utf-8');
+  return items[index];
+}

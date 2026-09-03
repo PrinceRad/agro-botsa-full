@@ -183,19 +183,68 @@
       </section>
 
       <section id="screen-activity" class="screen hidden">
-        <h2>Activity Log</h2>
-        <form id="activity-form">
-          <select id="activity-type">
-            <option value="watered">Watered</option>
-            <option value="sprayed">Sprayed</option>
-            <option value="planted">Planted</option>
-            <option value="harvested">Harvested</option>
-            <option value="other">Other</option>
-          </select>
-          <input type="text" id="activity-notes" placeholder="Notes (optional)" />
-          <button type="submit">Add Entry</button>
-        </form>
-        <ul id="activity-list"></ul>
+        <div class="activity-shell">
+          <div class="activity-heading">
+            <p class="screen-eyebrow">Field journal</p>
+            <h2>Activity Log</h2>
+            <p class="screen-intro">Keep a simple record of the work happening in your field, from watering through harvest.</p>
+          </div>
+
+          <div class="activity-grid">
+            <div class="activity-form-panel">
+              <div class="activity-panel-heading">
+                <span class="panel-step">01</span>
+                <div>
+                  <h3>Log an action</h3>
+                  <p>Add what you have done today.</p>
+                </div>
+              </div>
+              <form id="activity-form">
+                <label for="activity-type">What happened?</label>
+                <select id="activity-type">
+                  <option value="watered">Watered</option>
+                  <option value="sprayed">Sprayed</option>
+                  <option value="planted">Planted</option>
+                  <option value="harvested">Harvested</option>
+                  <option value="other">Other</option>
+                </select>
+                <label for="activity-date">When?</label>
+                <input type="date" id="activity-date" />
+                <label for="activity-crop">Crop or field <span>(optional)</span></label>
+                <input type="text" id="activity-crop" maxlength="80" placeholder="e.g. Tomatoes · North field" />
+                <label for="activity-notes">Details <span>(optional)</span></label>
+                <textarea id="activity-notes" rows="4" maxlength="240" placeholder="What should you remember?"></textarea>
+                <button type="submit" class="activity-submit">Save activity</button>
+                <button type="button" id="activity-cancel-edit" class="activity-cancel hidden">Cancel edit</button>
+                <p id="activity-form-status" class="activity-form-status" aria-live="polite"></p>
+              </form>
+            </div>
+
+            <div class="activity-list-panel">
+              <div class="activity-panel-heading">
+                <span class="panel-step">02</span>
+                <div>
+                  <h3>Recent activity</h3>
+                  <p>Your latest field notes.</p>
+                </div>
+              </div>
+              <div id="activity-context" class="activity-context hidden"></div>
+              <div class="activity-toolbar">
+                <label for="activity-filter">Show</label>
+                <select id="activity-filter">
+                  <option value="all">All activity</option>
+                  <option value="watered">Watered</option>
+                  <option value="sprayed">Sprayed</option>
+                  <option value="planted">Planted</option>
+                  <option value="harvested">Harvested</option>
+                  <option value="other">Other</option>
+                </select>
+                <span id="activity-summary"></span>
+              </div>
+              <ul id="activity-list"></ul>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="screen-settings" class="screen hidden">

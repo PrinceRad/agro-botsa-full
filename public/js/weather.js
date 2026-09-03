@@ -12,6 +12,7 @@ function renderWeather(data) {
       ${data.placeholder ? '<div class="weather-note">Sample data — live forecast connecting soon</div>' : ''}
     </div>
   `;
+  localStorage.setItem('agroWeatherContext', JSON.stringify({ temperature: data.temperature !== null && data.temperature !== undefined ? Math.round(data.temperature) : null, condition: data.condition, location: data.location }));
 }
 
 async function fetchWeatherByCoords(lat, lon) {

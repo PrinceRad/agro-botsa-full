@@ -1,5 +1,5 @@
 import express from 'express';
-import { add, getAll, remove } from '../data/store.js';
+import { add, getAll, remove, update } from '../data/store.js';
 
 const router = express.Router();
 
@@ -13,14 +13,27 @@ router.get('/', async (req, res) => {
 
 // POST /api/activity  { type, notes }
 router.post('/', async (req, res) => {
-  const { type, notes } = req.body;
+  const { type, notes, activityDate, crop } = req.body;
 
   if (!type || !ALLOWED_TYPES.includes(type)) {
     return res.status(400).json({ error: `type must be one of: ${ALLOWED_TYPES.join(', ')}` });
   }
 
-  const record = await add('activities', { type, notes: notes || '' });
+  const record = await add('activities', { type, notes: notes || '', activityDate: activityDate || new Date().toISOString().slice(0, 10), crop: crop || '' });
   res.status(201).json(record);
+});
+
+// PUT /api/activity/:id  { type, notes }
+router.put('/:id', async (req, res) => {
+  const { type, notes, activityDate, crop } = req.body;
+
+  if (!type || !ALLOWED_TYPES.includes(type)) {
+    return res.status(400).json({ error: `type must be one of: ${ALLOWED_TYPES.join(', ')}` });
+  }
+
+  const record = await update('activities', req.params.id, { type, notes: notes || '', activityDate: activityDate || new Date().toISOString().slice(0, 10), crop: crop || '' });
+  if (!record) return res.status(404).json({ error: 'Not found' });
+  res.json(record);
 });
 
 // DELETE /api/activity/:id

@@ -69,7 +69,11 @@ diagnoseSubmit.addEventListener('click', async () => {
     if (data.lowConfidence) {
       showResult(`<p class="result-label result-warning">Needs a closer look</p><h4>${escapeHtml(data.disease)}</h4><p>We are not confident in this result. Try a clearer, closer photo in better light.</p>`, 'warning');
     } else {
-      showResult(`<p class="result-label">Likely diagnosis</p><h4>${escapeHtml(data.disease)}</h4><p>${escapeHtml(data.recommendation)}</p>`, 'success');
+      showResult(`<p class="result-label">Likely diagnosis</p><h4>${escapeHtml(data.disease)}</h4><p>${escapeHtml(data.recommendation)}</p><button type="button" id="log-treatment" class="log-treatment">Log treatment</button>`, 'success');
+      document.getElementById('log-treatment').addEventListener('click', () => {
+        window.prefillActivity({ type: 'sprayed', notes: `Treatment for ${data.disease}: ${data.recommendation}` });
+        document.querySelector('.app-nav button[data-screen="activity"]').click();
+      });
     }
 
     window.loadDiagnoseHistory();

@@ -660,6 +660,84 @@ main {
 .history-status.is-warning { color: #ffc36b; }
 .diagnose-history-panel li.history-empty { display: block; color: rgba(255, 255, 255, 0.48); font-size: 0.82rem; text-align: center; }
 
+.activity-shell {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+}
+
+.activity-heading {
+  max-width: 620px;
+  margin-bottom: 38px;
+}
+
+.activity-heading h2 { margin-bottom: 16px; }
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.activity-form-panel,
+.activity-list-panel {
+  padding: 28px;
+  background: rgba(18, 28, 16, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.activity-panel-heading {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.activity-panel-heading h3 { margin: 0 0 5px; font-size: 1.05rem; }
+.activity-panel-heading p { margin: 0; color: rgba(255, 255, 255, 0.52); font-size: 0.8rem; }
+
+#activity-form { margin: 0; padding: 0; background: transparent; border: 0; backdrop-filter: none; }
+#activity-form label { display: block; margin: 0 0 7px; color: rgba(255, 255, 255, 0.74); font-size: 0.76rem; font-weight: 700; }
+#activity-form label + select,
+#activity-form label + textarea { margin-bottom: 18px; }
+#activity-form label span { color: rgba(255, 255, 255, 0.4); font-weight: 400; }
+#activity-type,
+#activity-notes { width: 100%; margin: 0; }
+#activity-notes { resize: vertical; }
+.activity-submit { width: 100%; padding: 14px 20px; border: 0; border-radius: 30px; background: var(--red); color: white; font-weight: 700; transition: background 0.2s ease, opacity 0.2s ease; }
+.activity-submit:hover:not(:disabled) { background: #a92535; }
+.activity-submit:disabled { cursor: wait; opacity: 0.55; }
+.activity-cancel { width: 100%; margin-top: 8px; padding: 9px 20px; border: 0; background: transparent; color: rgba(255, 255, 255, 0.55); font-size: 0.76rem; }
+.activity-cancel:hover { color: white; }
+.activity-form-status { min-height: 18px; margin: 12px 0 0; color: rgba(255, 255, 255, 0.5); font-size: 0.74rem; }
+.activity-form-status.is-success { color: #d5e2a5; }
+.activity-form-status.is-error,
+.activity-list-state.is-error { color: #ffc36b; }
+.log-treatment { margin-top: 8px; align-self: flex-start; padding: 10px 16px; border: 1px solid rgba(213, 226, 165, 0.6); border-radius: 30px; background: transparent; color: #d5e2a5; font-size: 0.76rem; font-weight: 700; }
+.log-treatment:hover { background: rgba(213, 226, 165, 0.12); }
+.activity-context { margin: -6px 0 16px; padding: 10px 12px; border-left: 2px solid #d5e2a5; color: rgba(255, 255, 255, 0.58); font-size: 0.74rem; }
+.activity-toolbar { margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }
+.activity-toolbar label { color: rgba(255, 255, 255, 0.5); font-size: 0.72rem; }
+.activity-toolbar select { width: auto; min-width: 130px; padding: 8px 10px; margin: 0; border-radius: 8px; font-size: 0.74rem; }
+.activity-toolbar span { margin-left: auto; color: rgba(255, 255, 255, 0.42); font-size: 0.72rem; }
+
+.activity-list-panel ul { max-width: none; margin: 0; }
+.activity-list-panel li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; margin-bottom: 8px; padding: 12px 13px; background: rgba(255, 255, 255, 0.06); border-radius: 9px; }
+.activity-entry-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: rgba(213, 226, 165, 0.14); color: #d5e2a5; font-size: 0.8rem; font-weight: 750; }
+.activity-entry-content { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.activity-entry-content strong { color: white; font-size: 0.86rem; }
+.activity-entry-content span { overflow: hidden; color: rgba(255, 255, 255, 0.65); font-size: 0.78rem; text-overflow: ellipsis; white-space: nowrap; }
+.activity-entry-content small { color: rgba(255, 255, 255, 0.4); font-size: 0.7rem; }
+.activity-entry-actions { display: flex; align-items: center; gap: 10px; }
+.activity-edit,
+.activity-delete { padding: 5px 0; border: 0; background: transparent; color: rgba(255, 255, 255, 0.42); font-size: 0.72rem; }
+.activity-edit:hover { color: #d5e2a5; }
+.activity-delete:hover { color: #ffc36b; }
+.activity-list-panel li.activity-list-state { display: block; color: rgba(255, 255, 255, 0.48); font-size: 0.82rem; text-align: center; }
+
 #weather-result {
   max-width: 760px;
   margin: 0 auto;
@@ -727,13 +805,11 @@ main {
 }
 
 #activity-form {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 30px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  backdrop-filter: none;
 }
 
 #screen-settings p {
@@ -895,6 +971,11 @@ li {
   #diagnose-result { min-height: 165px; padding-top: 12px; }
   .diagnose-history-panel { margin-top: 14px; }
   .history-heading { align-items: flex-start; flex-direction: column; gap: 6px; }
+
+  .activity-heading { margin-bottom: 28px; }
+  .activity-grid { grid-template-columns: 1fr; gap: 14px; }
+  .activity-form-panel,
+  .activity-list-panel { padding: 22px 18px; }
 }
 
 @media (max-width: 380px) {
