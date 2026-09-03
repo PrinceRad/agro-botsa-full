@@ -18,7 +18,8 @@ document.querySelectorAll('.app-nav button').forEach((btn) => {
   btn.addEventListener('click', () => navigateTo(btn.dataset.screen));
 });
 
-document.getElementById('hero-cta').addEventListener('click', () => navigateTo('diagnose'));
+const heroCta = document.getElementById('hero-cta');
+if (heroCta) heroCta.addEventListener('click', () => navigateTo('diagnose'));
 
 // Guide panel (real slide-in, not decorative)
 const guidePanel = document.getElementById('guide-panel');

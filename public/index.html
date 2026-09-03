@@ -24,8 +24,8 @@
     <main>
       <section id="screen-home" class="screen">
         <div class="hero">
-          <p class="hero-kicker">Practical tools for every growing day</p>
-          <h2>Grow with<br /><em>confidence.</em></h2>
+
+          <h2>Grow Smarter<br /><em>Harvest Better.</em></h2>
           <p>Weather insight, pest and disease diagnosis, and activity tracking everything you need to look after your crops, in one place.</p>
           <div class="hero-actions">
             <button type="button" id="guide-toggle">How to Use</button>
@@ -121,11 +121,65 @@
       </section>
 
       <section id="screen-diagnose" class="screen hidden">
-        <h2>Diagnose</h2>
-        <input type="file" accept="image/*" capture="environment" id="photo-input" />
-        <div id="diagnose-result"></div>
-        <h3>History</h3>
-        <ul id="diagnose-history"></ul>
+        <div class="diagnose-shell">
+          <div class="diagnose-heading">
+            <p class="screen-eyebrow">Plant health check</p>
+            <h2>Diagnose</h2>
+            <p class="screen-intro">Take a close, well-lit photo of the affected leaves or fruit. We will look for common pests and plant diseases.</p>
+          </div>
+
+          <div class="diagnose-grid">
+            <div class="diagnose-upload-panel">
+              <div class="diagnose-panel-heading">
+                <span class="panel-step">01</span>
+                <div>
+                  <h3>Add a plant photo</h3>
+                  <p>One clear image works best.</p>
+                </div>
+              </div>
+              <label class="photo-dropzone" for="photo-input">
+                <span class="photo-dropzone-icon" aria-hidden="true">+</span>
+                <strong>Choose a photo</strong>
+                <span>Camera or image file</span>
+                <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" id="photo-input" />
+              </label>
+              <p class="upload-note">JPG, PNG or WebP up to 10 MB</p>
+              <div id="photo-preview" class="photo-preview hidden">
+                <img id="photo-preview-image" alt="Selected plant photo preview" />
+                <div class="photo-preview-meta">
+                  <span id="photo-file-name"></span>
+                  <button type="button" id="photo-remove">Remove</button>
+                </div>
+              </div>
+              <button type="button" id="diagnose-submit" class="diagnose-submit" disabled>Analyze photo</button>
+            </div>
+
+            <div class="diagnose-result-panel" aria-live="polite">
+              <div class="diagnose-panel-heading">
+                <span class="panel-step">02</span>
+                <div>
+                  <h3>Your diagnosis</h3>
+                  <p>Results and treatment guidance appear here.</p>
+                </div>
+              </div>
+              <div id="diagnose-result" class="diagnose-result-empty">
+                <span class="result-mark" aria-hidden="true">+</span>
+                <p>Upload a photo to get started.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagnose-history-panel">
+            <div class="history-heading">
+              <div>
+                <p class="screen-eyebrow">Your records</p>
+                <h3>Recent diagnoses</h3>
+              </div>
+              <span class="history-caption">Saved automatically</span>
+            </div>
+            <ul id="diagnose-history"></ul>
+          </div>
+        </div>
       </section>
 
       <section id="screen-activity" class="screen hidden">
