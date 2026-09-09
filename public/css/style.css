@@ -738,50 +738,240 @@ main {
 .activity-delete:hover { color: #ffc36b; }
 .activity-list-panel li.activity-list-state { display: block; color: rgba(255, 255, 255, 0.48); font-size: 0.82rem; text-align: center; }
 
+/* --- Weather Dashboard --- */
+.weather-header {
+  margin-bottom: 30px;
+}
+
 #weather-result {
-  max-width: 760px;
+  max-width: 600px;
   margin: 0 auto;
-  min-height: 180px;
-  padding: 30px;
-  display: flex;
-  align-items: center;
+  position: relative;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(18, 28, 16, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
   color: white;
-  line-height: 1.7;
-  backdrop-filter: blur(12px);
+  overflow: hidden;
 }
 
-#weather-manual-fallback {
-  max-width: 760px;
-  margin: 20px auto 0;
-  padding: 25px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
+#weather-result::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at top right, rgba(213, 226, 165, 0.12), transparent 55%);
+  pointer-events: none;
 }
 
-.weather-display { width: 100%; }
+.weather-card {
+  padding: 40px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
 
-.weather-temp {
-  font-size: 3.2rem;
-  font-weight: 700;
-  line-height: 1;
+.weather-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.weather-icon {
+  width: 100px;
+  height: 100px;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.25));
+}
+
+.weather-icon-placeholder {
+  width: 100px;
+  height: 100px;
+}
+
+.weather-temp-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
   margin-bottom: 6px;
 }
 
+.weather-temp {
+  font-size: 4.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+  color: white;
+}
+
+.weather-unit {
+  font-size: 1.7rem;
+  font-weight: 650;
+  margin-top: 8px;
+  color: #d5e2a5;
+  opacity: 1;
+}
+
 .weather-condition {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.3rem;
+  font-weight: 600;
   text-transform: capitalize;
+  margin-bottom: 6px;
+  color: white;
+}
+
+.weather-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.65);
+  opacity: 1;
+}
+
+.weather-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.weather-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-label {
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #d5e2a5;
+  opacity: 1;
+}
+
+.detail-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* Best-effort selectors for the advisory/tip line (e.g. "good day for
+   spraying"). If this doesn't visibly restyle on your site, weather.js is
+   using a different class name — send me that file and I'll target it exactly. */
+.weather-advisory,
+.weather-tip,
+.weather-recommendation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border-left: 3px solid #d5e2a5;
+  background: rgba(213, 226, 165, 0.1);
+  color: white;
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
 .weather-note {
-  margin-top: 10px;
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.45);
+  opacity: 1;
+}
+
+.weather-error {
+  padding: 40px;
+  text-align: center;
+  font-weight: 600;
+  color: white;
+  background: rgba(18, 28, 16, 0.62);
+  border-radius: 20px;
+}
+
+/* Skeleton Loader */
+.skeleton {
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-icon { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto; }
+.skeleton-temp { width: 160px; height: 70px; margin: 20px auto 10px; }
+.skeleton-text { width: 200px; height: 24px; margin: 0 auto; }
+.skeleton-detail { height: 40px; }
+
+/* Manual Location Fallback */
+.weather-fallback-container {
+  max-width: 600px;
+  margin: 20px auto 0;
+  text-align: center;
+}
+
+.weather-fallback-container p {
+  margin-bottom: 15px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+  background: rgba(18, 28, 16, 0.55);
+  padding: 8px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px);
+}
+
+.search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-bar input::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+
+.search-bar button {
+  background: var(--red);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 99px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.search-bar button:hover {
+  background: #a92535;
+  transform: translateY(-2px);
 }
 
 #photo-input {
@@ -812,17 +1002,75 @@ main {
   backdrop-filter: none;
 }
 
-#screen-settings p {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 30px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.7;
-  backdrop-filter: blur(12px);
+.settings-shell { width: min(880px, 100%); margin: 0 auto; }
+.settings-heading { max-width: 620px; margin-bottom: 38px; }
+.settings-heading h2 { margin-bottom: 16px; }
+
+.settings-accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
+
+.settings-accordion {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background: rgba(18, 28, 16, 0.58);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.settings-accordion-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 26px;
+  cursor: pointer;
+  list-style: none;
+}
+.settings-accordion-summary::-webkit-details-marker { display: none; }
+
+.settings-accordion-title { display: flex; gap: 14px; align-items: flex-start; }
+.settings-accordion-title h3 { margin: 0 0 5px; font-size: 1.05rem; color: white; }
+.settings-accordion-title p { margin: 0; color: rgba(255, 255, 255, 0.52); font-size: 0.8rem; }
+
+.settings-accordion-chevron {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d5e2a5;
+}
+.settings-accordion-chevron::before { content: "+"; font-size: 1.1rem; line-height: 1; }
+.settings-accordion[open] .settings-accordion-chevron::before { content: "–"; }
+
+.settings-accordion-body {
+  padding: 0 26px 26px;
+}
+
+.settings-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.settings-danger { border-color: rgba(255, 137, 117, 0.5); color: #ff8975; }
+.settings-danger:hover { background: rgba(255, 137, 117, 0.12); }
+
+.status-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.status-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: rgba(255,255,255,0.06); border-radius: 9px; font-size: 0.82rem; color: rgba(255,255,255,0.85); }
+.status-dot { width: 9px; height: 9px; border-radius: 50%; background: #d5e2a5; flex-shrink: 0; }
+.status-dot.is-sample { background: #ffc36b; }
+.status-item small { display: block; margin-top: 2px; color: rgba(255,255,255,0.45); font-size: 0.7rem; }
+
+.roadmap-list { margin: 0; padding-left: 18px; color: rgba(255,255,255,0.55); font-size: 0.84rem; line-height: 1.8; }
+
+@media (max-width: 600px) {
+  .settings-accordion-summary { padding: 18px 20px; }
+  .settings-accordion-body { padding: 0 20px 22px; }
+}
+
+
 
 input, select {
   width: 100%;
@@ -989,5 +1237,102 @@ li {
   *, *::before, *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+/* ---------- Growing Tips Carousel ---------- */
+
+.tip-carousel-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tip-carousel-viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.tip-groups {
+  display: flex;
+  width: 100%;
+  transition: transform 0.8s ease;
+  will-change: transform;
+}
+
+.tip-group {
+  flex: 0 0 100%;
+  width: 100%;
+}
+
+.tip-cards-row {
+  width: 100%;
+}
+
+/* Navigation buttons */
+
+.tip-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(54, 77, 50, 0.2);
+  border-radius: 50%;
+  background: rgba(248, 250, 241, 0.95);
+  color: #20331d;
+
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.tip-nav-prev {
+  left: 10px;
+}
+
+.tip-nav-next {
+  right: 10px;
+}
+
+/* Show arrows only when hovering carousel */
+
+.tip-carousel-wrapper:hover .tip-nav {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tip-nav:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .tip-nav {
+    width: 38px;
+    height: 38px;
+    font-size: 24px;
+  }
+
+  .tip-nav-prev {
+    left: 6px;
+  }
+
+  .tip-nav-next {
+    right: 6px;
   }
 }
