@@ -3,9 +3,18 @@ import multer from 'multer';
 import fs from 'fs';
 import { add, getAll } from '../data/store.js';
 import { getRecommendation } from '../recommendations.js';
+import { cleanupUploadsIfNeeded } from '../data/photoCleanup.js';
+import { remove } from '../data/store.js';
 
 const router = express.Router();
-const upload = multer({ dest: 'server/uploads/' });
+const storage = multer.diskStorage({
+  destination: 'server/uploads/',
+  filename: (req, file, cb) => {
+    const ext = file.originalname.split('.').pop();
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1000)}.${ext}`);
+  },
+});
+const upload = multer({ storage });
 
 const LOW_CONFIDENCE_THRESHOLD = 0.5;
 
@@ -54,30 +63,72 @@ router.post('/', upload.single('photo'), async (req, res) => {
       };
     } catch (err) {
       return res.status(500).json({ error: 'Failed to reach plant-ID service', details: err.message });
-    } finally {
-      // clean up the uploaded file regardless of outcome
-      fs.unlink(req.file.path, () => {});
     }
   }
 
   const lowConfidence = result.confidence < LOW_CONFIDENCE_THRESHOLD;
-  const recommendation = lowConfidence ? null : getRecommendation(result.disease);
+  const recommendationResult = lowConfidence
+    ? null
+    : getRecommendation(result.disease);
 
   const record = await add('diagnoses', {
     disease: result.disease,
     confidence: result.confidence,
     lowConfidence,
-    recommendation,
+    recommendation: recommendationResult?.text ?? null,
+    recommendationMatch: recommendationResult?.matchType ?? null,
     placeholder: result.placeholder,
+    photoUrl: `/uploads/${req.file.filename}`,
   });
+
+  // Runs in the background — doesn't make the farmer wait for a cleanup check.
+  cleanupUploadsIfNeeded().catch((err) => console.error('Upload cleanup failed:', err));
 
   return res.json(record);
 });
-
 // GET /api/diagnose  — history of past diagnoses
 router.get('/', async (req, res) => {
   const items = await getAll('diagnoses');
   res.json(items);
 });
 
+// DELETE /api/diagnose/:id — remove a single diagnosis and its photo
+router.delete('/:id', async (req, res) => {
+  const items = await getAll('diagnoses');
+  const record = items.find((item) => item.id === req.params.id);
+
+  if (!record) {
+    return res.status(404).json({ error: 'Diagnosis not found' });
+  }
+
+  if (record.photoUrl) {
+    const filename = record.photoUrl.split('/').pop();
+    const filePath = path.join('server/uploads', filename);
+    fs.unlink(filePath, () => {}); // ignore errors — file may already be gone
+  }
+
+  await remove('diagnoses', req.params.id);
+  return res.json({ success: true });
+});
+
+// DELETE /api/diagnose — clear all diagnosis history and their photos
+router.delete('/', async (req, res) => {
+  const items = await getAll('diagnoses');
+
+  for (const record of items) {
+    if (record.photoUrl) {
+      const filename = record.photoUrl.split('/').pop();
+      const filePath = path.join('server/uploads', filename);
+      fs.unlink(filePath, () => {});
+    }
+  }
+
+  for (const record of items) {
+    await remove('diagnoses', record.id);
+  }
+
+  return res.json({ success: true, deletedCount: items.length });
+});
+
 export default router;
+

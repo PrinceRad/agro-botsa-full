@@ -66,10 +66,18 @@ diagnoseSubmit.addEventListener('click', async () => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Diagnosis failed');
 
+    const sampleBanner = data.placeholder
+      ? '<p class="result-sample-banner">Sample result — real photo analysis is not connected yet. This is a placeholder, not an actual diagnosis of your photo.</p>'
+      : '';
+
+    const categoryNote = data.recommendationMatch === 'category'
+      ? '<p class="result-category-note">This is general guidance for a similar type of issue, not a confirmed match for this specific disease.</p>'
+      : '';
+
     if (data.lowConfidence) {
-      showResult(`<p class="result-label result-warning">Needs a closer look</p><h4>${escapeHtml(data.disease)}</h4><p>We are not confident in this result. Try a clearer, closer photo in better light.</p>`, 'warning');
+      showResult(`${sampleBanner}<p class="result-label result-warning">Needs a closer look</p><h4>${escapeHtml(data.disease)}</h4><p>We are not confident in this result. Try a clearer, closer photo in better light.</p>`, 'warning');
     } else {
-      showResult(`<p class="result-label">Likely diagnosis</p><h4>${escapeHtml(data.disease)}</h4><p>${escapeHtml(data.recommendation)}</p><button type="button" id="log-treatment" class="log-treatment">Log treatment</button>`, 'success');
+      showResult(`${sampleBanner}<p class="result-label">Likely diagnosis</p><h4>${escapeHtml(data.disease)}</h4>${categoryNote}<p>${escapeHtml(data.recommendation)}</p><button type="button" id="log-treatment" class="log-treatment">Log treatment</button>`, 'success');
       document.getElementById('log-treatment').addEventListener('click', () => {
         window.prefillActivity({ type: 'sprayed', notes: `Treatment for ${data.disease}: ${data.recommendation}` });
         document.querySelector('.app-nav button[data-screen="activity"]').click();
@@ -91,11 +99,31 @@ window.loadDiagnoseHistory = async function loadDiagnoseHistory() {
     const items = await res.json();
     const diagnoses = items.slice().reverse();
     list.innerHTML = diagnoses.length ? diagnoses.map((item) => `
-      <li>
+      <li data-id="${item.id}">
+        ${item.photoUrl
+          ? `<img src="${item.photoUrl}" alt="${escapeHtml(item.disease)}" class="history-thumb" />`
+          : item.photoRemoved
+            ? '<div class="history-thumb history-thumb-removed" title="Photo removed to save space"></div>'
+            : '<div class="history-thumb history-thumb-empty"></div>'}
         <span><strong>${escapeHtml(item.disease)}</strong><small>${new Date(item.createdAt).toLocaleDateString()}</small></span>
         <em class="history-status ${item.lowConfidence ? 'is-warning' : ''}">${item.lowConfidence ? 'Uncertain' : 'Reviewed'}</em>
+        <button type="button" class="history-delete" aria-label="Delete this diagnosis">✕</button>
       </li>
     `).join('') : '<li class="history-empty">No diagnoses yet. Your saved results will appear here.</li>';
+
+    list.querySelectorAll('.history-delete').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        const li = e.target.closest('li');
+        const id = li.dataset.id;
+        if (!confirm('Delete this diagnosis?')) return;
+        try {
+          await fetch(`/api/diagnose/${id}`, { method: 'DELETE' });
+          window.loadDiagnoseHistory();
+        } catch (err) {
+          alert('Could not delete right now.');
+        }
+      });
+    });
   } catch (err) {
     list.innerHTML = '<li class="history-empty">Could not load history right now.</li>';
   }

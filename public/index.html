@@ -9,9 +9,11 @@
 </head>
 <body>
   <div class="app">
-    <header class="app-header">
-      <h1>Agro-Botsa</h1>
-    </header>
+<header class="app-header">
+  <button type="button" class="brand-home" onclick="showScreen('home')">
+    Agro-Botsa
+  </button>
+</header>
 
     <nav class="app-nav">
       <button type="button" data-screen="home" class="active"><span class="nav-label">Home</span></button>
@@ -27,12 +29,6 @@
 
           <h2>Grow Smarter<br /><em>Harvest Better.</em></h2>
           <p>Weather insight, pest and disease diagnosis, and activity tracking everything you need to look after your crops, in one place.</p>
-          <div class="hero-actions">
-            <button type="button" id="guide-toggle">How to Use</button>
-          </div>
-          <div class="hero-proof" aria-label="Agro-Botsa benefits">
-            <span>Weather ready</span><span>Crop focused</span><span>Easy records</span>
-          </div>
         </div>
 
         <div class="home-sections">
@@ -236,6 +232,8 @@
             </div>
           </div>
         </div>
+
+        <div id="weather-forecast"></div>
 
         <div id="weather-manual-fallback" class="hidden weather-fallback-container">
           <p>Location unavailable. Please enter your city:</p>

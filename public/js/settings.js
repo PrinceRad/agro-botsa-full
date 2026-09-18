@@ -2,7 +2,7 @@
   const PROFILE_KEY = 'agrobotsa_profile';
   const WEATHER_DEFAULTS_KEY = 'agrobotsa_weather_defaults';
   const ACTIVITY_KEY = 'agrobotsa_activities'; // ← confirm this matches activity.js
-  const DIAGNOSE_KEY = 'agrobotsa_diagnoses';  // ← confirm this matches diagnose.js
+  
 
   function load(key, fallback) {
     try {
@@ -93,10 +93,14 @@
   }
 
   if (clearBtn) {
-    clearBtn.addEventListener('click', function () {
+    clearBtn.addEventListener('click', async function () {
       if (!confirm('Clear all saved diagnosis history? This cannot be undone.')) return;
-      localStorage.removeItem(DIAGNOSE_KEY);
-      dataStatus.textContent = 'Diagnosis history cleared.';
+      try {
+        await fetch('/api/diagnose', { method: 'DELETE' });
+        dataStatus.textContent = 'Diagnosis history cleared.';
+      } catch (err) {
+        dataStatus.textContent = 'Could not clear history right now.';
+      }
     });
   }
 

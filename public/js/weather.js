@@ -20,6 +20,8 @@ const ADVISORY_ICONS = {
   humidity: '💧'
 };
 
+const GEOLOCATION_TIMEOUT_MS = 8000;
+
 function renderWeather(data) {
   const el = document.getElementById('weather-result');
   const tempDisplay =
@@ -83,13 +85,59 @@ function renderWeather(data) {
   }));
 }
 
+function renderForecast(days) {
+  const el = document.getElementById('weather-forecast');
+  if (!days || !days.length) {
+    el.innerHTML = '';
+    return;
+  }
+
+  const dayCardsHTML = days.map((day) => {
+    const iconUrl = day.icon ? `https://openweathermap.org/img/wn/${day.icon}@2x.png` : '';
+    const dateLabel = new Date(day.date).toLocaleDateString(undefined, { weekday: 'short' });
+
+    return `
+      <div class="forecast-day-card">
+        <span class="forecast-day-label">${dateLabel}</span>
+        ${iconUrl ? `<img src="${iconUrl}" alt="${day.condition}" class="forecast-day-icon" />` : ''}
+        <span class="forecast-day-temps"><strong>${Math.round(day.tempMax)}°</strong> / ${Math.round(day.tempMin)}°</span>
+        <span class="forecast-day-condition">${day.condition}</span>
+        ${day.farmAdvice ? `<span class="forecast-day-advice">${day.farmAdvice.message}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="forecast-strip">
+      <p class="forecast-strip-label">Next few days</p>
+      <div class="forecast-day-list">${dayCardsHTML}</div>
+    </div>
+  `;
+}
+
+async function fetchForecastByCoords(lat, lon) {
+  try {
+    const res = await fetch(`/api/weather/forecast?lat=${lat}&lon=${lon}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Forecast request failed');
+    renderForecast(data.days);
+  } catch (err) {
+    document.getElementById('weather-forecast').innerHTML = '';
+  }
+}
+
 async function fetchWeatherByCoords(lat, lon) {
   const el = document.getElementById('weather-result');
   el.innerHTML = getLoadingHTML();
+  document.getElementById('weather-forecast').innerHTML = '';
   try {
     const res = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
     const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Weather request failed');
+    }
     renderWeather(data);
+    fetchForecastByCoords(lat, lon);
   } catch (err) {
     el.innerHTML = '<div class="weather-error">Could not load weather right now.</div>';
   }
@@ -110,7 +158,12 @@ window.loadWeather = function loadWeather() {
 
   navigator.geolocation.getCurrentPosition(
     (position) => fetchWeatherByCoords(position.coords.latitude, position.coords.longitude),
-    () => showManualLocationFallback()
+    () => showManualLocationFallback(),
+    {
+      enableHighAccuracy: false,
+      timeout: GEOLOCATION_TIMEOUT_MS,
+      maximumAge: 5 * 60 * 1000
+    }
   );
 };
 
