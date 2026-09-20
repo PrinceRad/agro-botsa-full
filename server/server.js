@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import weatherRoutes from './routes/weather.js';
 import diagnoseRoutes from './routes/diagnose.js';
 import activityRoutes from './routes/activity.js';
+import exportRoutes from './routes/export.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use('/uploads', express.static('server/uploads'));
 app.use('/api/weather', weatherRoutes);
 app.use('/api/diagnose', diagnoseRoutes);
 app.use('/api/activity', activityRoutes);
+app.use('/api/export', exportRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 

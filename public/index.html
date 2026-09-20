@@ -275,6 +275,10 @@
                   <button type="button" id="photo-remove">Remove</button>
                 </div>
               </div>
+              <label class="photo-retention-option" for="save-photo">
+                <input type="checkbox" id="save-photo" checked />
+                <span><strong>Keep this photo with the diagnosis</strong><small>You can export or delete it later. Saved photos may be removed automatically when storage is full.</small></span>
+              </label>
               <button type="button" id="diagnose-submit" class="diagnose-submit" disabled>Analyze photo</button>
             </div>
 
@@ -299,7 +303,7 @@
                 <p class="screen-eyebrow">Your records</p>
                 <h3>Recent diagnoses</h3>
               </div>
-              <span class="history-caption">Saved automatically</span>
+              <span class="history-caption">Photos saved when selected</span>
             </div>
             <ul id="diagnose-history"></ul>
           </div>
@@ -443,13 +447,69 @@
               </div>
               <span class="settings-accordion-chevron" aria-hidden="true"></span>
             </summary>
-            <div class="settings-accordion-body">
-              <div class="settings-actions">
-                <button type="button" id="export-activity-btn" class="log-treatment">Export activity log (CSV)</button>
-                <button type="button" id="clear-diagnose-btn" class="log-treatment settings-danger">Clear diagnosis history</button>
-              </div>
-              <p id="data-status" class="activity-form-status" aria-live="polite"></p>
-            </div>
+ 
+<div class="settings-accordion-body">
+
+  <div class="settings-export-group">
+
+    <div class="settings-group-heading">
+      <span class="settings-group-label">YOUR FARM RECORDS</span>
+      <p>Choose how you want to save or view your records.</p>
+    </div>
+
+    <div class="settings-export-grid">
+
+      <button
+        type="button"
+        id="export-excel-btn"
+        class="settings-export-card settings-export-primary"
+      >
+        <span class="export-card-icon">↓</span>
+        <span class="export-card-content">
+          <strong>Export farm records</strong>
+          <small>Excel workbook (.xlsx)</small>
+        </span>
+        <span class="export-card-arrow">↗</span>
+      </button>
+
+      <button
+        type="button"
+        id="export-field-report-btn"
+        class="settings-export-card"
+      >
+        <span class="export-card-icon">▤</span>
+        <span class="export-card-content">
+          <strong>View field report</strong>
+          <small>Printable report · Save as PDF</small>
+        </span>
+        <span class="export-card-arrow">↗</span>
+      </button>
+
+    </div>
+
+    <p class="settings-export-note">
+      Export your records to keep a copy or print a summary of your farm activities and diagnoses.
+    </p>
+
+  </div>
+
+  <div class="settings-danger-zone">
+    <p class="settings-group-label">DANGER ZONE</p>
+
+    <button
+      type="button"
+      id="clear-diagnose-btn"
+      class="settings-danger-btn"
+    >
+      Clear diagnosis history
+    </button>
+
+    <p>Removes saved diagnosis records from the app.</p>
+  </div>
+
+  <p id="data-status" class="activity-form-status" aria-live="polite"></p>
+
+</div>
           </details>
 
           <details class="settings-accordion">

@@ -21,6 +21,8 @@ const ADVISORY_ICONS = {
 };
 
 const GEOLOCATION_TIMEOUT_MS = 8000;
+const WEATHER_DEFAULTS_KEY = 'agrobotsa_weather_defaults';
+const LAST_LOCATION_KEY = 'agroLastWeatherLocation';
 
 function renderWeather(data) {
   const el = document.getElementById('weather-result');
@@ -138,6 +140,8 @@ async function fetchWeatherByCoords(lat, lon) {
     }
     renderWeather(data);
     fetchForecastByCoords(lat, lon);
+    // Remember this location in case GPS fails next time.
+    localStorage.setItem(LAST_LOCATION_KEY, JSON.stringify({ latitude: lat, longitude: lon }));
   } catch (err) {
     el.innerHTML = '<div class="weather-error">Could not load weather right now.</div>';
   }
@@ -148,23 +152,84 @@ function showManualLocationFallback() {
   document.getElementById('weather-manual-fallback').classList.remove('hidden');
 }
 
-window.loadWeather = function loadWeather() {
-  document.getElementById('weather-manual-fallback').classList.add('hidden');
+// Turns a typed place name (e.g. "Gaborone, BW") into lat/lon coordinates.
+// Shared by the default-location lookup and the manual search box.
+async function geocodePlace(place) {
+  try {
+    const geoRes = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1`
+    );
+    const geoData = await geoRes.json();
+    const match = geoData.results?.[0];
+    return match ? { latitude: match.latitude, longitude: match.longitude } : null;
+  } catch (err) {
+    return null;
+  }
+}
 
-  if (!navigator.geolocation) {
+function getSavedDefaultLocation() {
+  try {
+    const raw = localStorage.getItem(WEATHER_DEFAULTS_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return parsed && parsed.location ? parsed.location : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function getLastKnownCoords() {
+  try {
+    const raw = localStorage.getItem(LAST_LOCATION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function tryLastKnownOrManual() {
+  const last = getLastKnownCoords();
+  if (last) {
+    fetchWeatherByCoords(last.latitude, last.longitude);
+  } else {
     showManualLocationFallback();
+  }
+}
+
+function tryLiveGeolocation() {
+  if (!navigator.geolocation) {
+    tryLastKnownOrManual();
     return;
   }
 
   navigator.geolocation.getCurrentPosition(
     (position) => fetchWeatherByCoords(position.coords.latitude, position.coords.longitude),
-    () => showManualLocationFallback(),
+    () => tryLastKnownOrManual(),
     {
       enableHighAccuracy: false,
       timeout: GEOLOCATION_TIMEOUT_MS,
       maximumAge: 5 * 60 * 1000
     }
   );
+}
+
+window.loadWeather = async function loadWeather() {
+  document.getElementById('weather-manual-fallback').classList.add('hidden');
+
+  // 1. A saved default location (set in Settings) always wins — the farmer
+  //    chose it on purpose, so don't override it with wherever the phone is.
+  const defaultLocation = getSavedDefaultLocation();
+  if (defaultLocation) {
+    const coords = await geocodePlace(defaultLocation);
+    if (coords) {
+      fetchWeatherByCoords(coords.latitude, coords.longitude);
+      return;
+    }
+    // Saved location didn't resolve (typo, no internet for geocoding, etc.)
+    // — fall through to live geolocation instead of failing outright.
+  }
+
+  // 2. No default set — try live GPS/browser location.
+  tryLiveGeolocation();
 };
 
 document.getElementById('manual-location-submit').addEventListener('click', async () => {
@@ -175,21 +240,11 @@ document.getElementById('manual-location-submit').addEventListener('click', asyn
   document.getElementById('weather-manual-fallback').classList.add('hidden');
   resultEl.innerHTML = getLoadingHTML();
 
-  try {
-    const geoRes = await fetch(
-      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1`
-    );
-    const geoData = await geoRes.json();
-    const match = geoData.results?.[0];
-
-    if (!match) {
-      resultEl.textContent = `Couldn't find "${place}". Try a nearby town or city name.`;
-      return;
-    }
-
-    fetchWeatherByCoords(match.latitude, match.longitude);
-  } catch (err) {
-    resultEl.innerHTML = '<div class="weather-error">Could not look up that location right now.</div>';
-    document.getElementById('weather-manual-fallback').classList.remove('hidden');
+  const coords = await geocodePlace(place);
+  if (!coords) {
+    resultEl.textContent = `Couldn't find "${place}". Try a nearby town or city name.`;
+    return;
   }
+
+  fetchWeatherByCoords(coords.latitude, coords.longitude);
 });

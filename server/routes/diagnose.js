@@ -5,6 +5,7 @@ import { add, getAll } from '../data/store.js';
 import { getRecommendation } from '../recommendations.js';
 import { cleanupUploadsIfNeeded } from '../data/photoCleanup.js';
 import { remove } from '../data/store.js';
+import path from 'path';
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -17,6 +18,34 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 const LOW_CONFIDENCE_THRESHOLD = 0.5;
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
+  }[character]));
+}
+
+function createDiagnosisExport(record) {
+  const date = new Date(record.createdAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+  let photoMarkup = '<p class="missing-photo">No photo is available for this diagnosis.</p>';
+
+  if (record.photoUrl) {
+    const filename = path.basename(record.photoUrl);
+    const photoPath = path.join('server', 'uploads', filename);
+    if (fs.existsSync(photoPath)) {
+      const extension = path.extname(filename).toLowerCase();
+      const mimeType = extension === '.png' ? 'image/png' : extension === '.webp' ? 'image/webp' : 'image/jpeg';
+      const imageBase64 = fs.readFileSync(photoPath).toString('base64');
+      photoMarkup = `<img src="data:${mimeType};base64,${imageBase64}" alt="Plant photo for this diagnosis">`;
+    }
+  }
+
+  const recommendationMarkup = record.recommendation
+    ? `<h2>Treatment guidance</h2><p>${escapeHtml(record.recommendation)}</p>`
+    : '';
+
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Agro-Botsa diagnosis record</title><style>body{font-family:Arial,sans-serif;max-width:720px;margin:36px auto;padding:0 20px;color:#1c2b20;line-height:1.5}h1{margin-bottom:0}h2{margin-top:28px;font-size:1.1rem}.muted{color:#617066}.label{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:#617066;font-weight:bold;margin-bottom:2px}.missing-photo{margin-top:24px;padding:18px;background:#f1f4ed;color:#617066}img{display:block;width:100%;max-height:560px;object-fit:contain;background:#f1f4ed;margin-top:28px}@media print{body{margin:0;max-width:none}}</style></head><body><h1>${escapeHtml(record.disease)}</h1><p class="muted">Diagnosis record · ${escapeHtml(date)}</p><p class="label">Confidence</p><p>${Math.round((record.confidence ?? 0) * 100)}%</p><p class="label">Assessment</p><p>${record.lowConfidence ? 'Needs a closer look' : 'Likely diagnosis'}</p>${recommendationMarkup}${photoMarkup}</body></html>`;
+}
 
 // POST /api/diagnose  (multipart/form-data, field name: "photo")
 router.post('/', upload.single('photo'), async (req, res) => {
@@ -90,6 +119,23 @@ router.post('/', upload.single('photo'), async (req, res) => {
 router.get('/', async (req, res) => {
   const items = await getAll('diagnoses');
   res.json(items);
+});
+
+// GET /api/diagnose/:id/export — downloads a printable, self-contained diagnosis record.
+router.get('/:id/export', async (req, res) => {
+  const items = await getAll('diagnoses');
+  const record = items.find((item) => item.id === req.params.id);
+  if (!record) return res.status(404).json({ error: 'Diagnosis not found' });
+
+  const safeDisease = String(record.disease || 'diagnosis')
+    .replace(/[^a-z0-9]+/gi, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase();
+  res.set({
+    'Content-Type': 'text/html; charset=utf-8',
+    'Content-Disposition': `attachment; filename="${safeDisease || 'diagnosis'}-record.html"`,
+  });
+  return res.send(createDiagnosisExport(record));
 });
 
 // DELETE /api/diagnose/:id — remove a single diagnosis and its photo

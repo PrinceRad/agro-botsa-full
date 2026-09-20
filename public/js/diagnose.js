@@ -4,6 +4,7 @@ const photoPreviewImage = document.getElementById('photo-preview-image');
 const photoFileName = document.getElementById('photo-file-name');
 const photoRemove = document.getElementById('photo-remove');
 const diagnoseSubmit = document.getElementById('diagnose-submit');
+const savePhoto = document.getElementById('save-photo');
 const resultEl = document.getElementById('diagnose-result');
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 let selectedFile = null;
@@ -18,6 +19,10 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>'"]/g, (character) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;',
   }[character]));
+}
+
+function exportDiagnosis(id) {
+  window.location.assign(`/api/diagnose/${encodeURIComponent(id)}/export`);
 }
 
 function clearPhoto() {
@@ -60,6 +65,7 @@ diagnoseSubmit.addEventListener('click', async () => {
 
   const formData = new FormData();
   formData.append('photo', selectedFile);
+  formData.append('savePhoto', savePhoto.checked ? 'true' : 'false');
 
   try {
     const res = await fetch('/api/diagnose', { method: 'POST', body: formData });
@@ -75,14 +81,16 @@ diagnoseSubmit.addEventListener('click', async () => {
       : '';
 
     if (data.lowConfidence) {
-      showResult(`${sampleBanner}<p class="result-label result-warning">Needs a closer look</p><h4>${escapeHtml(data.disease)}</h4><p>We are not confident in this result. Try a clearer, closer photo in better light.</p>`, 'warning');
+      showResult(`${sampleBanner}<p class="result-label result-warning">Needs a closer look</p><h4>${escapeHtml(data.disease)}</h4><p>We are not confident in this result. Try a clearer, closer photo in better light.</p><button type="button" id="export-diagnosis" class="log-treatment">Export diagnosis</button>`, 'warning');
     } else {
-      showResult(`${sampleBanner}<p class="result-label">Likely diagnosis</p><h4>${escapeHtml(data.disease)}</h4>${categoryNote}<p>${escapeHtml(data.recommendation)}</p><button type="button" id="log-treatment" class="log-treatment">Log treatment</button>`, 'success');
+      showResult(`${sampleBanner}<p class="result-label">Likely diagnosis</p><h4>${escapeHtml(data.disease)}</h4>${categoryNote}<p>${escapeHtml(data.recommendation)}</p><button type="button" id="log-treatment" class="log-treatment">Log treatment</button><button type="button" id="export-diagnosis" class="log-treatment">Export diagnosis</button>`, 'success');
       document.getElementById('log-treatment').addEventListener('click', () => {
         window.prefillActivity({ type: 'sprayed', notes: `Treatment for ${data.disease}: ${data.recommendation}` });
         document.querySelector('.app-nav button[data-screen="activity"]').click();
       });
     }
+
+    document.getElementById('export-diagnosis').addEventListener('click', () => exportDiagnosis(data.id));
 
     window.loadDiagnoseHistory();
   } catch (err) {
@@ -107,6 +115,7 @@ window.loadDiagnoseHistory = async function loadDiagnoseHistory() {
             : '<div class="history-thumb history-thumb-empty"></div>'}
         <span><strong>${escapeHtml(item.disease)}</strong><small>${new Date(item.createdAt).toLocaleDateString()}</small></span>
         <em class="history-status ${item.lowConfidence ? 'is-warning' : ''}">${item.lowConfidence ? 'Uncertain' : 'Reviewed'}</em>
+        <button type="button" class="history-export" aria-label="Export this diagnosis">Export</button>
         <button type="button" class="history-delete" aria-label="Delete this diagnosis">✕</button>
       </li>
     `).join('') : '<li class="history-empty">No diagnoses yet. Your saved results will appear here.</li>';
@@ -123,6 +132,10 @@ window.loadDiagnoseHistory = async function loadDiagnoseHistory() {
           alert('Could not delete right now.');
         }
       });
+    });
+
+    list.querySelectorAll('.history-export').forEach((btn) => {
+      btn.addEventListener('click', (e) => exportDiagnosis(e.target.closest('li').dataset.id));
     });
   } catch (err) {
     list.innerHTML = '<li class="history-empty">Could not load history right now.</li>';

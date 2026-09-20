@@ -645,6 +645,21 @@ main {
   font-size: 0.75rem;
 }
 
+.photo-retention-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 18px;
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.photo-retention-option input { margin: 3px 0 0; accent-color: var(--red); }
+.photo-retention-option strong, .photo-retention-option small { display: block; }
+.photo-retention-option small { margin-top: 3px; color: rgba(255, 255, 255, 0.48); font-size: 0.72rem; }
+
 .diagnose-submit {
   width: 100%;
   padding: 14px 20px;
@@ -705,6 +720,8 @@ main {
 .diagnose-history-panel li small { color: rgba(255, 255, 255, 0.45); font-size: 0.7rem; }
 .history-status { color: #d5e2a5; font-size: 0.7rem; font-style: normal; white-space: nowrap; }
 .history-status.is-warning { color: #ffc36b; }
+.history-export { border: 0; padding: 4px 7px; border-radius: 5px; background: rgba(213, 226, 165, 0.14); color: #d5e2a5; font-size: 0.7rem; white-space: nowrap; }
+.history-export:hover { background: rgba(213, 226, 165, 0.25); }
 .diagnose-history-panel li.history-empty { display: block; color: rgba(255, 255, 255, 0.48); font-size: 0.82rem; text-align: center; }
 
 .activity-shell {
@@ -1162,9 +1179,57 @@ main {
   padding: 0 26px 26px;
 }
 
-.settings-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
-.settings-danger { border-color: rgba(255, 137, 117, 0.5); color: #ff8975; }
-.settings-danger:hover { background: rgba(255, 137, 117, 0.12); }
+.settings-group-label {
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.settings-export-group { margin-bottom: 24px; }
+
+#export-excel-btn,
+#export-field-report-btn {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+#export-excel-btn {
+  border: 0;
+  background: var(--red);
+  color: white;
+}
+#export-excel-btn:hover { background: #a92535; }
+
+#export-field-report-btn {
+  margin-top: 10px;
+  border: 1px solid rgba(213, 226, 165, 0.5);
+  background: transparent;
+  color: #d5e2a5;
+}
+#export-field-report-btn:hover { background: rgba(213, 226, 165, 0.1); }
+
+.settings-danger-zone {
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-danger-btn {
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 137, 117, 0.5);
+  border-radius: 30px;
+  background: transparent;
+  color: #ff8975;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+.settings-danger-btn:hover { background: rgba(255, 137, 117, 0.12); }
 
 .status-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .status-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: rgba(255,255,255,0.06); border-radius: 9px; font-size: 0.82rem; color: rgba(255,255,255,0.85); }
