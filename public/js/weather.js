@@ -13,11 +13,11 @@ function getLoadingHTML() {
 }
 
 const ADVISORY_ICONS = {
-  good: '✓',
-  wind: '💨',
-  rain: '🌧',
-  heat: '☀',
-  humidity: '💧'
+  good: 'check',
+  wind: 'wind',
+  rain: 'cloud-rain',
+  heat: 'sun',
+  humidity: 'droplets'
 };
 
 const GEOLOCATION_TIMEOUT_MS = 8000;
@@ -42,7 +42,9 @@ function renderWeather(data) {
   const advisoryHTML = advisory
     ? `
       <div class="weather-advisory is-${advisory.severity}">
-        <span class="weather-advisory-icon">${ADVISORY_ICONS[advisory.severity] || 'ℹ'}</span>
+        <span class="weather-advisory-icon">
+  <i data-lucide="${ADVISORY_ICONS[advisory.severity] || 'info'}"></i>
+</span>
         <span>${advisory.message}</span>
       </div>`
     : '';
@@ -79,6 +81,7 @@ function renderWeather(data) {
     </div>
   `;
 
+lucide.createIcons();
   localStorage.setItem('agroWeatherContext', JSON.stringify({
     temperature: data.temperature !== null && data.temperature !== undefined ? Math.round(data.temperature) : null,
     condition: data.condition,

@@ -1519,3 +1519,280 @@ li {
   font: inherit;
   cursor: pointer;
 }
+
+
+/* =====================================
+   DATA EXPORT — CLEAN CARD LAYOUT
+===================================== */
+
+.settings-export-group {
+  margin: 0;
+}
+
+.settings-group-heading {
+  margin-bottom: 18px;
+}
+
+.settings-group-heading .settings-group-label {
+  margin-bottom: 6px;
+}
+
+.settings-group-heading p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.settings-export-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.settings-export-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 88px;
+  padding: 18px;
+  border: 1px solid rgba(213, 226, 165, 0.25);
+  border-radius: 14px;
+  background: rgba(213, 226, 165, 0.035);
+  color: #d5e2a5;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-export-card:hover {
+  background: rgba(213, 226, 165, 0.1);
+  border-color: rgba(213, 226, 165, 0.6);
+}
+
+.settings-export-primary {
+  background: #b65d2b;
+  border-color: #b65d2b;
+  color: #fff;
+}
+
+.settings-export-primary:hover {
+  background: #c66c37;
+  border-color: #c66c37;
+}
+
+.export-card-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 1px solid currentColor;
+  border-radius: 9px;
+  font-size: 1rem;
+}
+
+.export-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.export-card-content strong {
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.export-card-content small {
+  font-size: 0.7rem;
+  opacity: 0.65;
+  line-height: 1.4;
+}
+
+.export-card-arrow {
+  flex-shrink: 0;
+  font-size: 1rem;
+  opacity: 0.6;
+}
+
+.settings-export-note {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+/* =====================================
+   DANGER ZONE
+===================================== */
+
+.settings-danger-zone {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-danger-zone .settings-group-label {
+  color: #ff8975;
+  margin-bottom: 12px;
+}
+
+.settings-danger-zone > p:last-child {
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.settings-danger-btn {
+  padding: 11px 18px;
+  border: 1px solid rgba(255, 137, 117, 0.5);
+  border-radius: 10px;
+  background: transparent;
+  color: #ff8975;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.settings-danger-btn:hover {
+  background: rgba(255, 137, 117, 0.1);
+}
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width: 600px) {
+  .settings-export-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-export-card {
+    min-height: 76px;
+  }
+}
+
+.feedback-thumb {
+  flex: 1;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.feedback-thumb svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.8;
+}
+
+.feedback-thumb:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.feedback-thumb.is-selected {
+  border-color: #d5e2a5;
+  background: rgba(213, 226, 165, 0.14);
+}
+/* ---------- Feedback ---------- */
+
+#feedback-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 400;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 30px;
+  background: var(--red);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+#feedback-btn:hover {
+  background: #a92535;
+}
+
+.feedback-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.feedback-modal.hidden {
+  display: none;
+}
+
+.feedback-modal-card {
+  position: relative;
+  width: min(360px, 90vw);
+  padding: 28px;
+  background: #1c2417;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+#feedback-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.feedback-question {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.feedback-thumbs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.feedback-modal-card textarea {
+  width: 100%;
+  min-height: 90px;
+  margin: 0 0 14px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #202019;
+  font: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.feedback-thanks {
+  text-align: center;
+  color: #d5e2a5;
+  font-weight: 700;
+}
